@@ -4,6 +4,8 @@ import 'package:contact_book/update_.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 class show extends StatefulWidget {
   const show({Key? key}) : super(key: key);
@@ -105,67 +107,72 @@ class _showState extends State<show> {
                         String contact = map['contact'];
                         int id = map['id'];
 
-                        return Container(
-                          margin: EdgeInsets.only(left: 10, right: 10, top: 10),
-                          height: 80,
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: ShapeDecoration(
-                              color: Color(0xffffffff),
-                              shadows: [
-                                BoxShadow(
-                                    blurRadius: 7,
-                                    spreadRadius: 1,
-                                    offset: Offset(0, 3),
-                                    color: Colors.black.withOpacity(0.4))
-                              ],
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10))),
-                          child: ListTile(
-                            title: Text("${name}"),
-                            subtitle: Text("${contact}"),
-                            leading: Image.network(
-                                'https://cdn.onlinewebfonts.com/svg/img_237553.png'),
-                            onLongPress: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return SimpleDialog(
-                                    title: Text(
-                                      "Select Choice",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    children: [
-                                      ListTile(
-                                        title: Text("Update"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                                            return Update(map);
-                                          },));
-                                        },
+                        return SwipeTo(
+                          onRightSwipe: () {
+                            launch("tel://${contact}");
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+                            height: 80,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: ShapeDecoration(
+                                color: Color(0xffffffff),
+                                shadows: [
+                                  BoxShadow(
+                                      blurRadius: 7,
+                                      spreadRadius: 1,
+                                      offset: Offset(0, 3),
+                                      color: Colors.black.withOpacity(0.4))
+                                ],
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            child: ListTile(
+                              title: Text("${name}"),
+                              subtitle: Text("${contact}"),
+                              leading: Image.network(
+                                  'https://cdn.onlinewebfonts.com/svg/img_237553.png'),
+                              onLongPress: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return SimpleDialog(
+                                      title: Text(
+                                        "Select Choice",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      ListTile(
-                                        title: Text("Delete"),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          String qry = "DELETE from Contact_Book where id = '$id'";
-                                          db!.rawDelete(qry).then((value) {
+                                      children: [
+                                        ListTile(
+                                          title: Text("Update"),
+                                          onTap: () {
+                                            Navigator.pop(context);
                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                                              return show();
+                                              return Update(map);
                                             },));
-                                          });
-                                        },
-                                      ),
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: Text("Delete"),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            String qry = "DELETE from Contact_Book where id = '$id'";
+                                            db!.rawDelete(qry).then((value) {
+                                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                                                return show();
+                                              },));
+                                            });
+                                          },
+                                        ),
 
-                                    ],
-                                  );
-                                },
-                              );
-                            },
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         );
                       },

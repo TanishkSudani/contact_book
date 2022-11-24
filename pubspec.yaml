@@ -39,6 +39,8 @@ dependencies:
   sqflite:
   lottie:
   font_awesome_flutter:
+  url_launcher:
+  swipe_to:
 
 dev_dependencies:
   flutter_test:
