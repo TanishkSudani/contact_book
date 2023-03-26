@@ -1,9 +1,10 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class Model
 {
-
+  static SharedPreferences? prefs;
       Future<Database> createDatabase()
       async {
         // Get a location using getDatabasesPath
